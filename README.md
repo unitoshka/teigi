@@ -3,7 +3,7 @@
 
 dictionary navigator for the command line, written on zig
 
-~650kb binary (linux x86-64, releaseSmall), no runtime dependencies
+~610kb binary (linux x86-64, releaseSmall), no runtime dependencies
 
 [![Latest Release](https://img.shields.io/github/release/unitoshka/teigi.svg)](https://github.com/unitoshka/teigi/releases)
 ![Zig 0.16.0](https://img.shields.io/badge/zig-0.16.0-orange)

@@ -5,10 +5,6 @@ const types = @import("types.zig");
 const render = @import("render.zig");
 const api = @import("api.zig");
 
-fn italic(writer: *Io.Writer, text: []u8) !void {
-    try writer.print("\x1b[3;34m{s}\x1b[0m", .{text});
-}
-
 pub fn main(init: std.process.Init) !void {
     const allo = std.heap.smp_allocator;
 
@@ -30,9 +26,12 @@ pub fn main(init: std.process.Init) !void {
         std.process.exit(1);
     }
 
+    var client = std.http.Client{ .allocator = allo, .io = init.io };
+    defer client.deinit();
+
     const word = args[1];
 
-    const parsed = api.fetch(allo, init.io, word) catch |err| switch (err) {
+    const parsed = api.fetch(allo, word, &client) catch |err| switch (err) {
         error.NotFound => {
             try stderr.print("Word \"{s}\" not found\n", .{word});
             try stderr.flush();
@@ -47,7 +46,6 @@ pub fn main(init: std.process.Init) !void {
         },
         else => return err,
     };
-
     defer parsed.deinit();
 
     if (parsed.value.len == 0) {
