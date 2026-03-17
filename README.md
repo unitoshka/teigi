@@ -36,6 +36,7 @@ teigi <word> [options]
 **Options**
 ```
 -h, --help      Print this help
+-e, --examples  Examples of the use of the word
 ```
 
 ```sh

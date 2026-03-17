@@ -25,7 +25,9 @@ pub fn main(init: std.process.Init) !void {
         std.process.exit(1);
     }
 
-    var w: ?[]const u8 = null;
+    var examples = false;
+
+    var maybe_word: ?[]const u8 = null;
 
     var i: usize = 1;
 
@@ -37,15 +39,18 @@ pub fn main(init: std.process.Init) !void {
                 try render.printUsage(stdout);
 
                 std.process.exit(0);
+            } else if (std.mem.eql(u8, arg, "-e") or std.mem.eql(u8, arg, "--examples")) {
+                examples = true;
+            } else {
+                try stderr.print("Unknown flag: {s}\n\n", .{arg});
+                try stderr.flush();
             }
-
-            try stderr.print("Unknown flag: {s}\n", .{arg});
         } else {
-            w = arg;
+            maybe_word = arg;
         }
     }
 
-    const word = w orelse {
+    const word = maybe_word orelse {
         try render.printUsage(stdout);
 
         std.process.exit(1);
@@ -77,5 +82,9 @@ pub fn main(init: std.process.Init) !void {
         std.process.exit(1);
     }
 
-    try render.printEntry(stdout, parsed.value[0]);
+    try render.printEntry(
+        stdout,
+        parsed.value[0],
+        .{ .examples = examples },
+    );
 }

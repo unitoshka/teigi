@@ -4,9 +4,12 @@ const Phonetic = struct {
 
 const Definition = struct {
     definition: []u8,
+    synonyms: [][]u8,
+    antonyms: [][]u8,
+    example: ?[]u8 = null,
 };
 
-const Meaning = struct {
+pub const Meaning = struct {
     partOfSpeech: []u8,
     definitions: []Definition,
 };
