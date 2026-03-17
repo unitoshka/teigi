@@ -20,16 +20,39 @@ pub fn main(init: std.process.Init) !void {
     const args = try init.minimal.args.toSlice(allo);
 
     if (args.len < 2) {
-        try stderr.print("Usage: {s} <word>\n", .{args[0]});
-        try stderr.flush();
+        try render.printUsage(stdout);
 
         std.process.exit(1);
     }
 
+    var w: ?[]const u8 = null;
+
+    var i: usize = 1;
+
+    while (i < args.len) : (i += 1) {
+        const arg = args[i];
+
+        if (std.mem.startsWith(u8, arg, "-")) {
+            if (std.mem.eql(u8, arg, "-h") or std.mem.eql(u8, arg, "--help")) {
+                try render.printUsage(stdout);
+
+                std.process.exit(0);
+            }
+
+            try stderr.print("Unknown flag: {s}\n", .{arg});
+        } else {
+            w = arg;
+        }
+    }
+
+    const word = w orelse {
+        try render.printUsage(stdout);
+
+        std.process.exit(1);
+    };
+
     var client = std.http.Client{ .allocator = allo, .io = init.io };
     defer client.deinit();
-
-    const word = args[1];
 
     const parsed = api.fetch(allo, word, &client) catch |err| switch (err) {
         error.NotFound => {
@@ -55,5 +78,4 @@ pub fn main(init: std.process.Init) !void {
     }
 
     try render.printEntry(stdout, parsed.value[0]);
-    try stdout.flush();
 }

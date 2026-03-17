@@ -36,4 +36,23 @@ pub fn printEntry(w: *Io.Writer, entry: types.Entry) !void {
 
         try w.print("\n", .{});
     }
+
+    try w.flush();
+}
+
+pub fn printUsage(w: *Io.Writer) !void {
+    try w.writeAll(
+        \\teigi — dictionary navigator
+        \\
+        \\Usage:
+        \\  teigi <word> [options]
+        \\
+        \\Options:
+        \\  -h, --help       Print this help
+        \\
+        \\Examples:
+        \\  teigi search
+    );
+
+    try w.flush();
 }
