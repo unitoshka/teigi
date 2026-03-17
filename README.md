@@ -30,7 +30,12 @@ binary will be at `zig-out/bin/teigi`
 
 ## Usage
 ```sh
-teigi <word>
+teigi <word> [options]
+```
+
+**Options**
+```
+-h, --help      Print this help
 ```
 
 ```sh
